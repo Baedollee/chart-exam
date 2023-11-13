@@ -1,7 +1,7 @@
 import ReactApexChart from "react-apexcharts";
 import "./App.css";
 import Chart from "./components/Chart";
-import Table from "./components/Table";
+import ColumnCharts from "./components/ColumnCharts";
 
 const App = () => {
   const data = [
@@ -22,7 +22,7 @@ const App = () => {
   return (
     <div>
       {/* <Chart data={data} style={style} /> */}
-      <Table />
+      <ColumnCharts />
     </div>
   );
 };
