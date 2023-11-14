@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 // import Chart from "chart.js/auto"; // 얜 플러그인 자동으로
 import {
@@ -10,7 +10,36 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Bar, Chart } from "react-chartjs-2";
+
+export const CustomTitle = {
+  id: "customTitle",
+  beforeLayout: (chart, args, opts) => {
+    const { display, font } = opts;
+    if (!display) {
+      return;
+    }
+
+    const { ctx } = chart;
+    ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
+    const { width } = ctx.measureText(opts.text);
+    chart.options.layout.padding.left = width * 1.1;
+  },
+  afterDraw: (chart, args, opts) => {
+    const { font, text, color } = opts;
+    const {
+      ctx,
+      chartArea: { left, right },
+      canvas: { offsetLeft, offsetTop },
+    } = chart;
+
+    if (opts.display) {
+      ctx.fillStyle = color || Chart.defaults.color;
+      ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
+      ctx.fillText(text, offsetLeft * 1.4, offsetTop / 0.5);
+    }
+  },
+};
 
 ChartJS.register(
   CategoryScale,
@@ -18,14 +47,15 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  CustomTitle
 );
 
 const BarChart = () => {
-  const labels = ["0~8", "8~16", "17~20", "21~24", "25~(듀스)"];
+  const xLabels = ["0~8", "8~16", "17~20", "21~24", "25~(듀스)"];
 
   const data = {
-    labels,
+    labels: xLabels,
     datasets: [
       {
         label: "선수1",
@@ -41,8 +71,11 @@ const BarChart = () => {
   };
 
   const options = {
-    // responsive: false,
+    // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
     maintainAspectRatio: false,
+
+    responsive: true,
+
     maxBarThickness: 50, // 바 두께
     borderRadius: 5,
 
@@ -59,51 +92,6 @@ const BarChart = () => {
     layout: {
       padding: {
         left: 0,
-      },
-    },
-
-    plugins: {
-      datalabels: {
-        display: false,
-        color: "white",
-        anchor: "start",
-        align: "start",
-        font: { weight: 700 },
-        offset: -50,
-        formatter: (value, context) => {
-          return context?.dataset?.label;
-        },
-      },
-      // 범례 스타일링
-      legend: {
-        position: "bottom",
-        align: "center",
-
-        labels: {
-          // 범례 도형 모양과 관련된 속성으로, false일 경우엔 기본 직사각형 도형으로 표시됩니다.
-          usePointStyle: false,
-          // 범례 간 가로 간격을 조정할 수 있습니다. 범례의 상하 padding을 지정하는 기능은 따로 지원되지 않음
-          padding: 20,
-          boxWidth: 30,
-          //   boxHeight: 10,
-          font: {
-            // 범례의 폰트 스타일 지정.
-            family: "'Noto Sans KR', 'serif'",
-            lineHeight: 1,
-          },
-        },
-      },
-      tooltip: {},
-
-      title: {
-        display: true,
-        text: "점수대별 서브 성공&범실",
-        // position: "start",
-        // align: "center",
-      },
-      subtitle: {
-        display: true,
-        text: "Custom Chart Subtitle",
       },
     },
 
@@ -130,11 +118,11 @@ const BarChart = () => {
 
         title: {
           // 이 축의 단위 또는 이름도 title 속성을 이용하여 표시할 수 있습니다.
-          display: true,
+          display: false,
           padding: { bottom: 0, top: 0 },
           align: "end",
           color: "black",
-          rotation: -90,
+
           font: {
             size: 12,
             family: "'Noto Sans KR', sans-serif",
@@ -160,7 +148,7 @@ const BarChart = () => {
             }
           },
           backdropColor: "blue",
-          padding: 5,
+          padding: 7,
         },
 
         border: {
@@ -206,16 +194,52 @@ const BarChart = () => {
         },
       },
     },
+
+    plugins: {
+      // 내부 라벨 표시 여부
+      datalabels: {
+        display: false,
+      },
+
+      // 범례 스타일링
+      legend: {
+        position: "bottom",
+        align: "center",
+
+        labels: {
+          // 범례 도형 모양과 관련된 속성으로, false일 경우엔 기본 직사각형 도형으로 표시됩니다.
+          usePointStyle: false,
+          // 범례 간 가로 간격을 조정할 수 있습니다. 범례의 상하 padding을 지정하는 기능은 따로 지원되지 않음
+          padding: 10,
+          boxWidth: 30,
+          //   boxHeight: 10,
+          font: {
+            // 범례의 폰트 스타일 지정.
+            family: "'Noto Sans KR', 'serif'",
+            lineHeight: 1,
+          },
+        },
+      },
+      tooltip: {},
+
+      title: {
+        display: true,
+        text: "점수대별 서브 성공&범실",
+        // position: "start",
+        // align: "center",
+      },
+      customTitle: {
+        display: true,
+        text: "(회)",
+        color: "black",
+      },
+    },
   };
 
   return (
     <Container>
       {/* <Doughnut data={DoughnutData} options={DoughnutOptions} /> */}
-      <Bar
-        options={options}
-        data={data}
-        // style={{ position: "relative", height: "100%", width: "100%" }}
-      />
+      <Bar options={options} data={data} />
     </Container>
   );
 };
@@ -226,7 +250,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
   width: 400px;
   height: 400px;
 `;

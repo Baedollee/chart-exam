@@ -24,13 +24,13 @@ ChartJS.register(
 );
 
 const HorizontalBarChart = () => {
-  const labels = ["선수1", "선수2", "선수3", "30", "120"];
+  const labels = ["선수1", "선수2"];
   const data = {
     labels,
     datasets: [
       {
         label: ["선수1"],
-        data: [150],
+        data: [150, 200, 300],
         backgroundColor: "blue",
       },
       {
@@ -62,19 +62,6 @@ const HorizontalBarChart = () => {
     layout: {
       padding: {
         left: 0,
-      },
-    },
-
-    plugins: {
-      datalabels: {
-        color: "white",
-        anchor: "start",
-        align: "start",
-        font: { weight: 700 },
-        offset: -50,
-        formatter: (value, context) => {
-          return context?.dataset?.label;
-        },
       },
 
       // 범례 스타일링
@@ -224,16 +211,19 @@ const HorizontalBarChart = () => {
         },
       },
     },
-    // plugins: {
-    //   datalabels: {
-    //     color: "#fff",
-    //     anchor: "end",
-    //     align: "start",
-    //     formatter: function (value, context) {
-    //       return value;
-    //     },
-    //   },
-    // },
+    plugins: {
+      datalabels: {
+        display: true,
+        color: "white",
+        anchor: "start",
+        align: "start",
+        font: { weight: 700 },
+        offset: -50,
+        formatter: (value, context) => {
+          return context?.dataset?.label;
+        },
+      },
+    },
   };
 
   return (
