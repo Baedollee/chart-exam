@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 // import Chart from "chart.js/auto"; // 얜 플러그인 자동으로
 import ChartDataLabels from "chartjs-plugin-datalabels";
@@ -24,22 +24,24 @@ ChartJS.register(
 );
 
 const HorizontalBarChart = () => {
-  const labels = ["선수1", "선수2"];
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: ["선수1"],
-        data: [150, 200, 300],
-        backgroundColor: "blue",
-      },
-      {
-        label: ["선수2"],
-        data: [120],
-        backgroundColor: "blue",
-      },
-    ],
-  };
+  const ChartData = useMemo(() => {
+    const labels = ["선수1", "선수2", "선수3", "선수4", "선수5"];
+    const data = {
+      labels,
+      datasets: [
+        {
+          // label: ["선수1", "선수2", "선수3"],
+          data: [150, 200, 300, 200, 100],
+          backgroundColor: "blue",
+        },
+      ],
+    };
+
+    return { labels, data };
+  }, []);
+
+  const { data } = ChartData;
+
   const options = {
     // 그래프 축 변경
     indexAxis: "y",
@@ -64,25 +66,6 @@ const HorizontalBarChart = () => {
         left: 0,
       },
 
-      // 범례 스타일링
-      legend: {
-        position: "bottom",
-        align: "center",
-
-        labels: {
-          // 범례 도형 모양과 관련된 속성으로, false일 경우엔 기본 직사각형 도형으로 표시됩니다.
-          usePointStyle: false,
-          // 범례 간 가로 간격을 조정할 수 있습니다. 범례의 상하 padding을 지정하는 기능은 따로 지원되지 않음
-          padding: 20,
-          boxWidth: 30,
-          //   boxHeight: 10,
-          font: {
-            // 범례의 폰트 스타일 지정.
-            family: "'Noto Sans KR', 'serif'",
-            lineHeight: 1,
-          },
-        },
-      },
       tooltip: {},
 
       title: {
@@ -140,8 +123,7 @@ const HorizontalBarChart = () => {
 
         // 눈금선 설정
         grid: {
-          //   display: false,
-          //   drawOnChartArea: true,
+          // drawOnChartArea: true,
           display: false,
           drawTicks: false,
           color: "lightgray",
@@ -156,7 +138,7 @@ const HorizontalBarChart = () => {
               return value;
             }
           },
-          backdropColor: "blue",
+          backdropColor: "lightgray",
           padding: 5,
           mirror: true,
         },
@@ -196,11 +178,11 @@ const HorizontalBarChart = () => {
         },
 
         // 눈금 선 설정
-        grid: { drawTicks: false, color: "white" },
+        grid: { drawTicks: true, color: "white" },
 
         border: {
           z: 0,
-          color: "blue",
+          color: "lightGray",
           width: 1,
         },
 
@@ -223,16 +205,33 @@ const HorizontalBarChart = () => {
           return context?.dataset?.label;
         },
       },
+
+      // 범례 스타일링
+      legend: {
+        display: false,
+        position: "bottom",
+        align: "center",
+
+        labels: {
+          // 범례 도형 모양과 관련된 속성으로, false일 경우엔 기본 직사각형 도형으로 표시됩니다.
+          usePointStyle: false,
+          // 범례 간 가로 간격을 조정할 수 있습니다. 범례의 상하 padding을 지정하는 기능은 따로 지원되지 않음
+          padding: 20,
+          boxWidth: 30,
+          //   boxHeight: 10,
+          font: {
+            // 범례의 폰트 스타일 지정.
+            family: "'Noto Sans KR', 'serif'",
+            lineHeight: 1,
+          },
+        },
+      },
     },
   };
 
   return (
     <Container>
-      <Bar
-        options={options}
-        data={data}
-        // style={{ position: "relative", height: "100%", width: "100%" }}
-      />
+      <Bar options={options} data={data} />
     </Container>
   );
 };

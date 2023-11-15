@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 // import Chart from "chart.js/auto"; // 얜 플러그인 자동으로
 import {
@@ -12,8 +12,17 @@ import {
 } from "chart.js";
 import { Bar, Chart } from "react-chartjs-2";
 
-export const CustomTitle = {
-  id: "customTitle",
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const BarCustomYTitle = {
+  id: "barCustomYTitle",
   beforeLayout: (chart, args, opts) => {
     const { display, font } = opts;
     if (!display) {
@@ -23,35 +32,32 @@ export const CustomTitle = {
     const { ctx } = chart;
     ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
     const { width } = ctx.measureText(opts.text);
-    chart.options.layout.padding.left = width * 1.1;
+
+    chart.options.layout.padding.left = width * 1;
   },
   afterDraw: (chart, args, opts) => {
     const { font, text, color } = opts;
     const {
       ctx,
-      chartArea: { left, right },
+      chartArea: { left, right, top, bottom, height, width },
       canvas: { offsetLeft, offsetTop },
     } = chart;
-
     if (opts.display) {
+      // console.log("BarCustomYTitle", (right - left) * 0.1 - 10);
+
       ctx.fillStyle = color || Chart.defaults.color;
       ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
-      ctx.fillText(text, offsetLeft * 1.4, offsetTop / 0.5);
+      ctx.fillText(text, (right - width) * 0.5, bottom - height);
     }
   },
 };
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  CustomTitle
-);
-
-const BarChart = () => {
+/**
+ * 막대 차트
+ * @labelColor 라벨들의 색상
+ * @returns
+ */
+const BarChart = ({ labelColor }) => {
   const xLabels = ["0~8", "8~16", "17~20", "21~24", "25~(듀스)"];
 
   const data = {
@@ -116,20 +122,20 @@ const BarChart = () => {
         min: 0,
         max: 100,
 
-        title: {
-          // 이 축의 단위 또는 이름도 title 속성을 이용하여 표시할 수 있습니다.
-          display: false,
-          padding: { bottom: 0, top: 0 },
-          align: "end",
-          color: "black",
+        // title: {
+        // 이 축의 단위 또는 이름도 title 속성을 이용하여 표시할 수 있습니다.
+        //   display: false,
+        //   padding: { bottom: 0, top: 0 },
+        //   align: "end",
+        //   color: "black",
 
-          font: {
-            size: 12,
-            family: "'Noto Sans KR', sans-serif",
-            weight: 500,
-          },
-          text: "(회)",
-        },
+        //   font: {
+        //     size: 12,
+        //     family: "'Noto Sans KR', sans-serif",
+        //     weight: 500,
+        //   },
+        //   text: "(회)",
+        // },
 
         // 눈금선 설정
         grid: {
@@ -148,12 +154,13 @@ const BarChart = () => {
             }
           },
           backdropColor: "blue",
+          color: labelColor || "black",
           padding: 7,
         },
 
         border: {
           z: 0,
-          color: "red",
+          color: labelColor || "black",
           width: 1,
           dash: [8], // 그리드 선의 길이와 간격 type number[]
         },
@@ -184,11 +191,12 @@ const BarChart = () => {
 
         border: {
           z: 0,
-          color: "blue",
+          color: labelColor || "black",
           width: 1,
         },
 
         ticks: {
+          color: labelColor || "black",
           minRotation: 0, // x축 값의 회전 각도를 설정
           padding: 5, // x축 값의 상하 패딩을 설정
         },
@@ -228,10 +236,10 @@ const BarChart = () => {
         // position: "start",
         // align: "center",
       },
-      customTitle: {
+      barCustomYTitle: {
         display: true,
         text: "(회)",
-        color: "black",
+        color: labelColor || "black",
       },
     },
   };
@@ -239,7 +247,7 @@ const BarChart = () => {
   return (
     <Container>
       {/* <Doughnut data={DoughnutData} options={DoughnutOptions} /> */}
-      <Bar options={options} data={data} />
+      <Bar options={options} data={data} plugins={[BarCustomYTitle]} />
     </Container>
   );
 };
@@ -250,6 +258,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 400px;
-  height: 400px;
+  width: 600px;
+  height: 300px;
 `;

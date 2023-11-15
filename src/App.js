@@ -6,10 +6,8 @@ import LineChart from "./components/ChartsJS/LineChart";
 const App = () => {
   return (
     <div style={{ padding: "20px" }}>
-      {/* <Chart data={data} style={style} /> */}
-      {/* <ColumnCharts /> */}
-      <BarChart />
       <HorizontalBarChart />
+      <BarChart labelColor={"gray"} />
       <LineChart />
     </div>
   );
