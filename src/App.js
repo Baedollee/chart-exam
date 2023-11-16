@@ -20,9 +20,12 @@ const App = () => {
 
 const Wrap = styled.div`
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  height: 1000px;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 50px;
+  padding: 50px;
+  /* flex-wrap: wrap; */
 `;
 
 export default App;

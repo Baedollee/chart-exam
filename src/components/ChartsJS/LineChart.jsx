@@ -66,7 +66,7 @@ const LineCustomYTitle = {
  * @returns
  */
 const LineChart = () => {
-  const xLabels = ["0~4", "5~8", "9~12", "13~16", "17~21", "22~25", "26~회"];
+  // const xLabels = ["0~4", "5~8", "9~12", "13~16", "17~21", "22~25", "26~회"];
 
   const data = {
     // labels: [xLabels],

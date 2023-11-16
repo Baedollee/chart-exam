@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { useRef } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -10,8 +11,8 @@ const Container = styled.div`
   position: relative;
   justify-content: center;
   align-items: center;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
 `;
 
 const TextArea = styled.div`
@@ -22,21 +23,22 @@ const TextArea = styled.div`
   transform: translate(-50%, -50%);
   text-align: center;
   span {
-    font-size: 50px;
+    font-size: 40px;
     font-weight: 500;
   }
 `;
 
 const HalfDoughnutChart = () => {
-  const num = 60;
+  const num = 80;
+
   const data = {
     labels: ["pink"],
     datasets: [
       {
-        data: [num, 100 - num],
-        // data: [300, 50, 100],
-        backgroundColor: ["skyblue", "lightGray"],
-        hoverBackgroundColor: ["skyblue", "lightGray"],
+        data: num ? [num, 100 - num] : [0, 100],
+        // data: [0, 0],
+        backgroundColor: ["red", "lightGray"],
+        hoverBackgroundColor: ["red", "lightGray"],
       },
     ],
   };
@@ -106,7 +108,7 @@ const HalfDoughnutChart = () => {
     <Container>
       <Doughnut data={data} options={options} />
       <TextArea>
-        <span>{num}</span>
+        <span>{num}%</span>
       </TextArea>
     </Container>
   );

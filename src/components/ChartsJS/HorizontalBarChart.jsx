@@ -32,24 +32,25 @@ const Container = styled.div`
 `;
 
 const HorizontalBarChart = () => {
-  const ChartData = useMemo(() => {
-    const labels = ["선수1", "선수2", "선수3", "선수4", "선수5"];
-    const data = {
-      labels,
-      datasets: [
-        {
-          // label: ["선수1", "선수2", "선수3"],
-          data: [150, 200, 300, 200, 100],
-          backgroundColor: "blue",
-        },
-      ],
-    };
-
-    return { labels, data };
-  }, []);
-
-  const { data } = ChartData;
-
+  const data = {
+    // labels,
+    datasets: [
+      {
+        // label: ["선수1", "선수2", "선수3"],
+        label: "리그평균",
+        data: [
+          { x: "0~4", y: 40 },
+          { x: "5~8", y: 100 },
+          { x: "9~12", y: 80 },
+          { x: "13~16", y: 50 },
+          { x: "17~21", y: 80 },
+          { x: "22~25", y: 30 },
+          { x: "26~회", y: 70 },
+        ],
+        backgroundColor: "blue",
+      },
+    ],
+  };
   const options = {
     // 그래프 축 변경
     indexAxis: "y",
