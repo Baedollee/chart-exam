@@ -21,6 +21,14 @@ ChartJS.register(
   Legend
 );
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+`;
+
 const BarCustomYTitle = {
   id: "barCustomYTitle",
   beforeLayout: (chart, args, opts) => {
@@ -253,11 +261,3 @@ const BarChart = ({ labelColor }) => {
 };
 
 export default BarChart;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 600px;
-  height: 300px;
-`;

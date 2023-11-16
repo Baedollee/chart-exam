@@ -23,6 +23,14 @@ ChartJS.register(
   ChartDataLabels
 );
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+`;
+
 const HorizontalBarChart = () => {
   const ChartData = useMemo(() => {
     const labels = ["선수1", "선수2", "선수3", "선수4", "선수5"];
@@ -237,12 +245,3 @@ const HorizontalBarChart = () => {
 };
 
 export default HorizontalBarChart;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  width: 400px;
-  height: 400px;
-`;

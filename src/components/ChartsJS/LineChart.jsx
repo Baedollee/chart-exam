@@ -22,6 +22,14 @@ ChartJS.register(
   Legend
 );
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+`;
+
 const LineCustomYTitle = {
   id: "lineCustomYTitle",
   beforeLayout: (chart, args, opts) => {
@@ -61,12 +69,13 @@ const LineChart = () => {
   const xLabels = ["0~4", "5~8", "9~12", "13~16", "17~21", "22~25", "26~회"];
 
   const data = {
-    labels: xLabels,
+    // labels: [xLabels],
     datasets: [
       {
         type: "bar",
         label: "",
         backgroundColor: "white",
+        borderColor: "white",
       },
       {
         type: "line",
@@ -81,12 +90,29 @@ const LineChart = () => {
           { x: "26~회", y: 70 },
         ],
         backgroundColor: "red",
+        borderColor: "red",
       },
       {
         type: "line",
         label: "김연경",
         data: [20, 30, 10, 100, 50, 60, 40],
         backgroundColor: "blue",
+        borderColor: "blue",
+      },
+      {
+        type: "line",
+        label: "으아아아",
+        data: [
+          { x: "0~4", y: 4 },
+          { x: "5~8", y: 10 },
+          { x: "9~12", y: 8 },
+          { x: "13~16", y: 5 },
+          { x: "17~21", y: 8 },
+          { x: "22~25", y: 3 },
+          { x: "26~회", y: 7 },
+        ],
+        backgroundColor: "yellow",
+        borderColor: "yellow",
       },
     ],
   };
@@ -95,6 +121,17 @@ const LineChart = () => {
     // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
     maintainAspectRatio: false,
     responsive: true,
+
+    // 점의 굵기
+    radius: 6,
+    // 점의 색상
+    // pointBackgroundColor: "#fff",
+    interaction: {
+      // intersect: false,
+    },
+
+    // 선 두께
+    borderWidth: 2,
 
     layout: {},
 
@@ -211,11 +248,3 @@ const LineChart = () => {
 };
 
 export default LineChart;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 600px;
-  height: 400px;
-`;
