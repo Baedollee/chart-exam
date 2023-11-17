@@ -65,24 +65,38 @@ const BarCustomYTitle = {
  * @labelColor 라벨들의 색상
  * @returns
  */
-const BarChart = ({ labelColor }) => {
-  const xLabels = ["0~8", "8~16", "17~20", "21~24", "25~(듀스)"];
+const BarChart = ({ labelColor, max }) => {
+  const dummy = {
+    label: "선수1",
+    data: [
+      { x: "0~8", y: 40 },
+      { x: "8~16", y: 100 },
+      { x: "17~20", y: 80 },
+      { x: "21~24", y: 50 },
+      { x: "25~(듀스)", y: 80 },
+    ],
+    backgroundColor: "orange",
+  };
+
+  const dummy2 = {
+    label: "선수2",
+    data: [
+      { x: "0~8", y: 60 },
+      { x: "8~16", y: 200 },
+      { x: "17~20", y: 80 },
+      { x: "21~24", y: 50 },
+      { x: "25~(듀스)", y: 80 },
+    ],
+    backgroundColor: "skyblue",
+  };
 
   const data = {
-    labels: xLabels,
-    datasets: [
-      {
-        label: "선수1",
-        data: [10, 20, 30, 40, 50],
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-      {
-        label: "선수2",
-        data: [80, 70, 60, 50, 40],
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-      },
-    ],
+    datasets: [dummy, dummy2],
   };
+
+  const dataMaxNum = data?.datasets?.map((i) => i.data)?.flat();
+  const NumCheck = max ? max : Math.max(...dataMaxNum);
+  // console.log("TCL: BarChart -> dataMaxValue", NumCheck);
 
   const options = {
     // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
@@ -119,16 +133,6 @@ const BarChart = ({ labelColor }) => {
     scales: {
       y: {
         axis: "y", // 이 축이 y축임을 명시해줍니다.
-        afterDataLimits: (scale) => {
-          // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
-          // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
-          // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-          scale.max = scale.max * 1.2;
-        },
-
-        // beginAtZero: true,
-        min: 0,
-        max: 100,
 
         // title: {
         // 이 축의 단위 또는 이름도 title 속성을 이용하여 표시할 수 있습니다.
@@ -144,6 +148,24 @@ const BarChart = ({ labelColor }) => {
         //   },
         //   text: "(회)",
         // },
+        min: 0,
+
+        max: Math.round(NumCheck / 100) * 100,
+        // beforeDataLimits: (scale) => {
+        //   // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
+        //   // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
+        //   // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
+        //   console.log(scale);
+
+        //   scale.max = scale.max * 1.2;
+        // },
+        afterDataLimits: (scale) => {
+          // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
+          // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
+          // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
+
+          scale.max = scale.max * 1.2;
+        },
 
         // 눈금선 설정
         grid: {
@@ -155,8 +177,10 @@ const BarChart = ({ labelColor }) => {
 
         ticks: {
           beginAtZero: true,
-          stepSize: 20,
+          // maxTicksLimit: 6,
+          stepSize: (Math.round(NumCheck / 100) * 100) / 5,
           callback: (value, index, ticks) => {
+            // console.log("TCL: BarChart -> value", value);
             if (value !== 0) {
               return value;
             }

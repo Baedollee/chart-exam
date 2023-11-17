@@ -13,6 +13,8 @@ const Container = styled.div`
   height: 500px;
 `;
 
+const COMMON_COLOR = ["red", "blue", "black", "orange", "green", "orange"];
+
 const DoughnutChart = () => {
   const data = {
     // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -20,7 +22,7 @@ const DoughnutChart = () => {
     datasets: [
       {
         data: [20, 20, 10, 5, 5, 10],
-        backgroundColor: ["red", "blue", "black", "orange", "green", "orange"],
+        backgroundColor: COMMON_COLOR,
       },
     ],
   };

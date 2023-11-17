@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { useRef } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -11,70 +10,62 @@ const Container = styled.div`
   position: relative;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 500px;
+  width: ${({ width }) => (width ? width : 200)}px;
+  height: ${({ width }) => (width ? width / 2 : 100)}px;
 `;
 
 const TextArea = styled.div`
   display: flex;
   position: absolute;
-  top: 70%;
+  top: 80%;
   left: 50%;
   transform: translate(-50%, -50%);
+
   text-align: center;
-  span {
-    font-size: 40px;
+  ${({ fontSize }) =>
+    `span {
+    font-size: ${fontSize ? fontSize : 20}px;
     font-weight: 500;
-  }
+  `}}
 `;
 
-const HalfDoughnutChart = () => {
-  const num = 80;
+/**
+ *
+ * @xValue 보여줘야 하는 퍼센트 값 type: num
+ * @width 차트 크기
+ * @returns
+ */
+const HalfDoughnutChart = ({ data, option }) => {
+  const { xValue, barColor } = data;
 
-  const data = {
-    labels: ["pink"],
+  const { width, fontSize } = option;
+
+  console.log("TCL: HalfDoughnutChart -> color", barColor);
+
+  const CountRangeSet = (value) => {
+    if (value > 100) {
+      return 100;
+    }
+    if (value < 0) {
+      return 0;
+    }
+    return value;
+  };
+
+  const num = xValue ? CountRangeSet(xValue) : 0;
+
+  const chartData = {
+    labels: [],
     datasets: [
       {
         data: num ? [num, 100 - num] : [0, 100],
         // data: [0, 0],
-        backgroundColor: ["red", "lightGray"],
-        hoverBackgroundColor: ["red", "lightGray"],
+        backgroundColor: [barColor || "blue", "lightGray"],
+        hoverBackgroundColor: [barColor || "blue", "lightGray"],
       },
     ],
   };
 
-  //   const options = {
-  //     responsive: true,
-  //     // 도넛 안에 내부 원 크기 default 50%
-  //     cutout: "50%",
-  //     radius: "90%",
-  //     // 도넛 반 자르기
-  //     circumference: 180,
-  //     // 도넛 돌리기
-  //     rotation: 270,
-  //     borderWidth: 0,
-  //     scaleBeginAtZero: true,
-
-  //     elements: {
-  //       center: {
-  //         text: Math.round(num * 100),
-  //         fontStyle: "Helvetica", //Default Arial
-  //         sidePadding: 15, //Default 20 (as a percentage)
-  //       },
-  //     },
-
-  //     plugins: {
-  //       datalabels: { display: false },
-
-  //       custom: {},
-  //       legend: {
-  //         display: false,
-  //       },
-  //       tooltips: {
-  //         enabled: false,
-  //       },
-  //     },
-  //   };
   const options = {
     rotation: -90,
     circumference: 180,
@@ -103,11 +94,10 @@ const HalfDoughnutChart = () => {
       },
     },
   };
-
   return (
-    <Container>
-      <Doughnut data={data} options={options} />
-      <TextArea>
+    <Container width={width}>
+      <Doughnut data={chartData} options={options} />
+      <TextArea fontSize={fontSize}>
         <span>{num}%</span>
       </TextArea>
     </Container>
