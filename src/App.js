@@ -5,6 +5,7 @@ import DoughnutChart from "./components/ChartsJS/DoughnutChart";
 import HorizontalBarChart from "./components/ChartsJS/HorizontalBarChart";
 import LineChart from "./components/ChartsJS/LineChart";
 import HalfDoughnutChart from "./components/ChartsJS/HalfDoughnutChart";
+import ScatterChart from "./components/ChartsJS/ScatterChart";
 
 const App = () => {
   const dummy = {
@@ -37,7 +38,7 @@ const App = () => {
 
   const doughnutDummyOption = {
     width: 200,
-    fontSize: 30,
+    // fontSize: 30,
   };
 
   const doughnutDummyData = {
@@ -58,6 +59,7 @@ const App = () => {
         data={doughnutDummyData}
         option={doughnutDummyOption}
       />
+      <ScatterChart />
     </Wrap>
   );
 };

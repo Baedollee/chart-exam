@@ -25,8 +25,8 @@ const TextArea = styled.div`
   ${({ fontSize }) =>
     `span {
     font-size: ${fontSize ? fontSize : 20}px;
-    font-weight: 500;
-  `}}
+    font-weight: 700}
+  `}
 `;
 
 /**
