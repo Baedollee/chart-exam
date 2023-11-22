@@ -28,26 +28,23 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 500px;
-  height: 500px;
+  height: 300px;
 `;
 
 const HorizontalBarChart = () => {
   const ChartData = useMemo(() => {
-    const labels = ["선수1", "선수2", "선수3", "선수4", "선수5"];
+    const labels = [
+      "선수1 ~ 선수2",
+      "선수2 ~ 선수3",
+      "선수3 ~ 선수4",
+      "선수4 ~ 선수5",
+      "선수5 ~ 선수6",
+    ];
     const data = {
       labels,
       datasets: [
         {
-          data: [150, 200, 300, 200, 100],
-          // data: [
-          //   { x: "0~4", y: 40 },
-          //   { x: "5~8", y: 100 },
-          //   { x: "9~12", y: 80 },
-          //   { x: "13~16", y: 50 },
-          //   { x: "17~21", y: 80 },
-          //   { x: "22~25", y: 30 },
-          //   { x: "26~회", y: 70 },
-          // ],
+          data: [30, 100, 50, 40, 60],
           backgroundColor: "blue",
         },
       ],
@@ -64,7 +61,7 @@ const HorizontalBarChart = () => {
 
     // responsive: false,
     maintainAspectRatio: false,
-    maxBarThickness: 50, // 바 두께
+    maxBarThickness: 60, // 바 두께
     borderRadius: 5,
 
     // 바 간격
@@ -106,12 +103,13 @@ const HorizontalBarChart = () => {
     scales: {
       y: {
         axis: "y", // 이 축이 y축임을 명시해줍니다.
-        // afterDataLimits: (scale) => {
-        //   // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
-        //   // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
-        //   // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-        //   scale.max = scale.max * 1.2;
-        // },
+
+        afterDataLimits: (scale) => {
+          // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
+          // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
+          // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
+          // scale.max = scale.max * 0.9;
+        },
 
         // beginAtZero: true,
         min: 0,
@@ -190,7 +188,7 @@ const HorizontalBarChart = () => {
           // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
           // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
           // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-          scale.max = scale.max * 1.5;
+          scale.max = scale.max * 1.2;
         },
 
         // 눈금 선 설정
@@ -211,14 +209,35 @@ const HorizontalBarChart = () => {
     },
     plugins: {
       datalabels: {
-        display: true,
-        color: "white",
-        anchor: "start",
-        align: "start",
-        font: { weight: 700 },
-        offset: -50,
-        formatter: (value, context) => {
-          return context?.dataset?.label;
+        labels: {
+          title: {
+            font: {
+              weight: "900",
+            },
+            anchor: "end",
+            align: "end",
+            color: "black",
+            formatter: (value) => {
+              return value;
+            },
+          },
+          value: {
+            anchor: "start",
+            clamp: true,
+            align: "center",
+            color: "white",
+            font: {
+              weight: "900",
+            },
+            // offset: (ctx) => {
+            //   const { height } = ctx.chart.chartArea;
+
+            //   return height / (ctx.dataset.data.length + 13);
+            // },
+            formatter: (value, ctx) => {
+              return " ".repeat(24) + ctx.chart.data.labels[ctx.dataIndex];
+            },
+          },
         },
       },
 

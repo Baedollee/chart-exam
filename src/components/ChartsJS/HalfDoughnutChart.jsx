@@ -40,8 +40,6 @@ const HalfDoughnutChart = ({ data, option }) => {
 
   const { width, fontSize } = option;
 
-  console.log("TCL: HalfDoughnutChart -> color", barColor);
-
   const CountRangeSet = (value) => {
     if (value > 100) {
       return 100;

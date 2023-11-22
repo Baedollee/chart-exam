@@ -6,6 +6,7 @@ import HorizontalBarChart from "./components/ChartsJS/HorizontalBarChart";
 import LineChart from "./components/ChartsJS/LineChart";
 import HalfDoughnutChart from "./components/ChartsJS/HalfDoughnutChart";
 import ScatterChart from "./components/ChartsJS/ScatterChart";
+import CommonRadioBox from "./components/Common/CommonRadioBox";
 
 const App = () => {
   const dummy = {
@@ -55,22 +56,28 @@ const App = () => {
       />
       <LineChart />
       <DoughnutChart />
+      <ScatterChart
+        yLabelTitle={"으아아아"}
+        yLabelValue={20}
+        xLabelTitle={"나나나"}
+        xLabelValue={10}
+      />
       <HalfDoughnutChart
         data={doughnutDummyData}
         option={doughnutDummyOption}
       />
-      <ScatterChart />
+      <CommonRadioBox />
     </Wrap>
   );
 };
 
 const Wrap = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   gap: 50px;
   padding: 50px;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
 `;
 
 export default App;

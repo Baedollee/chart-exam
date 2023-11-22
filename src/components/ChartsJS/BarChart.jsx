@@ -149,7 +149,6 @@ const BarChart = ({ labelColor, max }) => {
         //   text: "(회)",
         // },
         min: 0,
-
         max: Math.round(NumCheck / 100) * 100,
         // beforeDataLimits: (scale) => {
         //   // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
@@ -215,6 +214,7 @@ const BarChart = ({ labelColor, max }) => {
 
       x: {
         axis: "x", // x축(가로축)인지 y축(세로축)인지 표시합니다.
+
         // barPercentage: 1.0,
         // categoryPercentage: 1.0,
 
