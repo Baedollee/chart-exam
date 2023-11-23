@@ -111,8 +111,8 @@ const LineChart = () => {
           { x: "22~25", y: 3 },
           { x: "26~회", y: 7 },
         ],
-        backgroundColor: "yellow",
-        borderColor: "yellow",
+        backgroundColor: "green",
+        borderColor: "green",
       },
     ],
   };

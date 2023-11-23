@@ -9,29 +9,62 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 500px;
+  width: ${({ width }) => {
+    return width || `100%`;
+  }};
+  height: ${({ height }) => {
+    return height || `100%`;
+  }};
 `;
 
-const COMMON_COLOR = ["red", "blue", "black", "orange", "green", "orange"];
+// 랜덤 색상
+const randomRgb = () => {
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
 
-const DoughnutChart = () => {
-  const data = {
-    // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    labels: ["김연경", "배성열", "강인호", "으아아아", "배고파", "피곤해"],
+  return [r, g, b];
+};
+
+const randomRgbHex = () => {
+  let [r, g, b] = randomRgb();
+
+  r = r.toString(16).length === 1 ? "0" + r.toString(16) : r.toString(16);
+  g = g.toString(16).length === 1 ? "0" + g.toString(16) : g.toString(16);
+  b = b.toString(16).length === 1 ? "0" + b.toString(16) : b.toString(16);
+
+  return r + g + b;
+};
+
+/**
+ * 도넛 차트
+ * @data 데이타 셋 / type : {}
+ * @options 옵션 셋 / type : {}
+ * @width 차트 컨테이너 너비 / default : '100%' / type : string
+ * @height 차트 컨테이너 높이 / default : '100%' / type : string
+ * @returns 도넛 차트
+ */
+const DoughnutChart = ({ data, options, width, height }) => {
+  const { fontSize, cutout, borderWidth } = options;
+
+  const newData = [...data] || null;
+  const doughnutData = {
+    labels: newData?.map((i) => i?.xValue) || "",
     datasets: [
       {
-        data: [20, 20, 10, 5, 5, 10],
-        backgroundColor: COMMON_COLOR,
+        data: newData?.map((i) => i?.yValue) || [0],
+        backgroundColor: newData?.map((i) => {
+          return i?.color || "#" + randomRgbHex();
+        }),
       },
     ],
   };
 
-  const options = {
+  const doughnutOptions = {
     responsive: true,
 
     // 도넛 안에 내부 원 크기 default 50%
-    cutout: "50%",
+    cutout: cutout || "50%",
 
     radius: "90%",
     // 도넛 반 자르기
@@ -40,18 +73,20 @@ const DoughnutChart = () => {
     // rotation: 270,
 
     borderColor: "white",
-    borderWidth: 2,
+    borderWidth: borderWidth || 0,
     hoverOffset: 20,
     hoverBorderColor: "white",
-    elements: {
-      arc: {},
-    },
+
+    // elements: {
+    //   arc: {},
+    // },
+
     plugins: {
       // 내부에 라벨 표시 설정
       datalabels: {
         display: true,
         color: "white",
-        font: { size: "30%", weight: 900, family: "Noto Sans" },
+        font: { size: fontSize || "21px", weight: 900, family: "Noto Sans" },
         formatter: (value, ctx) => {
           let datasets = ctx.chart.data?.datasets?.[0]?.data;
           if (value !== 0) {
@@ -85,8 +120,8 @@ const DoughnutChart = () => {
   };
 
   return (
-    <Container>
-      <Doughnut data={data} options={options} />
+    <Container width={width} height={height}>
+      <Doughnut data={doughnutData} options={doughnutOptions} />
     </Container>
   );
 };

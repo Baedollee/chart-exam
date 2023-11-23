@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import "./App.css";
 import BarChart from "./components/ChartsJS/BarChart";
 import DoughnutChart from "./components/ChartsJS/DoughnutChart";
@@ -7,36 +7,48 @@ import LineChart from "./components/ChartsJS/LineChart";
 import HalfDoughnutChart from "./components/ChartsJS/HalfDoughnutChart";
 import ScatterChart from "./components/ChartsJS/ScatterChart";
 import CommonRadioBox from "./components/Common/CommonRadioBox";
+import {
+  barDataList,
+  barOptions,
+  doughnutDataList,
+  doughnutOptions,
+} from "./components/ChartsJS/DataSet";
+
+const GlobalStyles = createGlobalStyle`
+  html, body, #root {
+    font-size: 20px;
+  }
+
+  body {
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+      sans-serif;  
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button {
+    display: flex;
+    cursor: pointer;
+    outline: none;
+    border-radius: 3px;
+  }
+
+  input {
+    display: flex;
+    outline: none;
+    padding-left: 10px;
+  }
+
+  div{
+
+  }
+   
+`;
 
 const App = () => {
-  const dummy = {
-    label: "선수1",
-    data: [
-      { x: "0~8", y: 40 },
-      { x: "8~16", y: 100 },
-      { x: "17~20", y: 80 },
-      { x: "21~24", y: 50 },
-      { x: "25~(듀스)", y: 80 },
-    ],
-    backgroundColor: "orange",
-  };
-
-  const dummy2 = {
-    label: "선수2",
-    data: [
-      { x: "0~8", y: 60 },
-      { x: "8~16", y: 200 },
-      { x: "17~20", y: 80 },
-      { x: "21~24", y: 50 },
-      { x: "25~(듀스)", y: 80 },
-    ],
-    backgroundColor: "skyblue",
-  };
-
-  const option = {
-    name: ["선수1"],
-  };
-
   const doughnutDummyOption = {
     width: 200,
     // fontSize: 30,
@@ -44,18 +56,29 @@ const App = () => {
 
   const doughnutDummyData = {
     xValue: 40,
-    barColor: "yellow",
+    barColor: "green",
   };
 
   return (
     <Wrap>
+      <GlobalStyles />
       <HorizontalBarChart />
+
       <BarChart
-        labelColor={"gray"}
-        //  max={0}
+        data={barDataList}
+        options={barOptions}
+        width={"20rem"}
+        height={"20rem"}
       />
+
+      <DoughnutChart
+        data={doughnutDataList}
+        options={doughnutOptions}
+        width={"10rem"}
+        height={"10rem"}
+      />
+
       <LineChart />
-      <DoughnutChart />
       <ScatterChart
         yLabelTitle={"으아아아"}
         yLabelValue={20}

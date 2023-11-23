@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar, Chart } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -25,83 +25,62 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 500px;
+  width: ${({ width }) => {
+    return width || `100%`;
+  }};
+  height: ${({ height }) => {
+    return height || `100%`;
+  }};
 `;
-
-const BarCustomYTitle = {
-  id: "barCustomYTitle",
-  beforeLayout: (chart, args, opts) => {
-    const { display, font } = opts;
-    if (!display) {
-      return;
-    }
-
-    const { ctx } = chart;
-    ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
-    const { width } = ctx.measureText(opts.text);
-
-    chart.options.layout.padding.left = width * 1;
-  },
-  afterDraw: (chart, args, opts) => {
-    const { font, text, color } = opts;
-    const {
-      ctx,
-      chartArea: { left, right, top, bottom, height, width },
-      canvas: { offsetLeft, offsetTop },
-    } = chart;
-    if (opts.display) {
-      // console.log("BarCustomYTitle", (right - left) * 0.1 - 10);
-
-      ctx.fillStyle = color || Chart.defaults.color;
-      ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
-      ctx.fillText(text, (right - width) * 0.5, bottom - height);
-    }
-  },
-};
 
 /**
  * 막대 차트
- * @labelColor 라벨들의 색상
- * @returns
+ * @data 데이타 셋 / type : {}
+ * @options 옵션 셋 / type : {}
+ * @width 차트 컨테이너 너비 / default : '100%' / type : string
+ * @height 차트 컨테이너 높이 / default : '100%' / type : string
+ * @returns 막대 차트
  */
-const BarChart = ({ labelColor, max }) => {
-  const dummy = {
-    label: "선수1",
-    data: [
-      { x: "0~8", y: 40 },
-      { x: "8~16", y: 100 },
-      { x: "17~20", y: 80 },
-      { x: "21~24", y: 50 },
-      { x: "25~(듀스)", y: 80 },
-    ],
-    backgroundColor: "orange",
-  };
+const BarChart = ({ data, options, width, height }) => {
+  const { xLabelTitle, yLabelTitle, labelColor, max } = options;
 
-  const dummy2 = {
-    label: "선수2",
-    data: [
-      { x: "0~8", y: 60 },
-      { x: "8~16", y: 200 },
-      { x: "17~20", y: 80 },
-      { x: "21~24", y: 50 },
-      { x: "25~(듀스)", y: 80 },
-    ],
-    backgroundColor: "skyblue",
-  };
+  const newData =
+    data &&
+    Array.isArray(data) &&
+    data.map((i) => {
+      const { name, data, barColor } = i;
 
-  const data = {
-    datasets: [dummy, dummy2],
-  };
+      const newArray = data?.map((j) => {
+        const { xValue, yValue } = j;
+        return { x: xValue || "", y: yValue || 0 };
+      });
 
-  const dataMaxNum = data?.datasets?.map((i) => i.data)?.flat();
-  const NumCheck = max ? max : Math.max(...dataMaxNum);
-  // console.log("TCL: BarChart -> dataMaxValue", NumCheck);
+      return { label: name, data: newArray, backgroundColor: barColor };
+    });
 
-  const options = {
-    // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
-    maintainAspectRatio: false,
+  const dataList = newData ? { datasets: [...newData] } : { datasets: [] };
 
+  const dataMaxNum = Math.max(
+    ...dataList?.datasets
+      ?.map((i) => i.data)
+      ?.flat()
+      ?.map((i) => i.y)
+  );
+
+  const maxCheck = max ? max * 1.2 : dataMaxNum * 1.2;
+
+  const xLabel = [
+    ...dataList?.datasets
+      ?.map((i) => i.data)
+      ?.flat()
+      ?.map((i) => i.x),
+  ];
+
+  const uniqueLabelArray = [...new Set(xLabel), "으아아"];
+  console.log("TCL: BarChart -> uniqueLabelArray", uniqueLabelArray);
+
+  const defaultOptions = {
+    maintainAspectRatio: false, // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
     responsive: true,
 
     maxBarThickness: 50, // 바 두께
@@ -125,7 +104,7 @@ const BarChart = ({ labelColor, max }) => {
 
     elements: {
       bar: {
-        backgroundColor: "red",
+        backgroundColor: "blue",
         // borderWidth: 5,
       },
     },
@@ -133,67 +112,40 @@ const BarChart = ({ labelColor, max }) => {
     scales: {
       y: {
         axis: "y", // 이 축이 y축임을 명시해줍니다.
-
-        // title: {
-        // 이 축의 단위 또는 이름도 title 속성을 이용하여 표시할 수 있습니다.
-        //   display: false,
-        //   padding: { bottom: 0, top: 0 },
-        //   align: "end",
-        //   color: "black",
-
-        //   font: {
-        //     size: 12,
-        //     family: "'Noto Sans KR', sans-serif",
-        //     weight: 500,
-        //   },
-        //   text: "(회)",
-        // },
         min: 0,
-        max: Math.round(NumCheck / 100) * 100,
-        // beforeDataLimits: (scale) => {
-        //   // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
-        //   // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
-        //   // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-        //   console.log(scale);
-
-        //   scale.max = scale.max * 1.2;
-        // },
-        afterDataLimits: (scale) => {
-          // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
-          // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
-          // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-
-          scale.max = scale.max * 1.2;
+        max: max ? maxCheck : Math.round(maxCheck / 10) * 10,
+        border: {
+          z: 0,
+          color: labelColor || "lightGray",
+          width: 1,
+          dash: [8], // 그리드 선의 길이와 간격 type number[]
         },
 
         // 눈금선 설정
         grid: {
-          //   display: false,
-          //   drawOnChartArea: true,
           drawTicks: false,
-          color: "lightgray",
+          color: (ctx) => {
+            if (ctx.tick.label !== yLabelTitle) {
+              return labelColor || "lightgray";
+            }
+          },
         },
 
+        // y축 틱 설정
         ticks: {
           beginAtZero: true,
-          // maxTicksLimit: 6,
-          stepSize: (Math.round(NumCheck / 100) * 100) / 5,
+          minTicksLimit: 5,
+          stepSize: Math.round(maxCheck / 6 / 10) * 10,
           callback: (value, index, ticks) => {
-            // console.log("TCL: BarChart -> value", value);
             if (value !== 0) {
+              if (index === ticks.length - 1) {
+                return yLabelTitle;
+              }
               return value;
             }
           },
-          backdropColor: "blue",
-          color: labelColor || "black",
-          padding: 7,
-        },
-
-        border: {
-          z: 0,
-          color: labelColor || "black",
-          width: 1,
-          dash: [8], // 그리드 선의 길이와 간격 type number[]
+          color: labelColor || "lightgray",
+          padding: 8,
         },
       },
       // y 축 하나 더 필요하면
@@ -214,22 +166,31 @@ const BarChart = ({ labelColor, max }) => {
 
       x: {
         axis: "x", // x축(가로축)인지 y축(세로축)인지 표시합니다.
+        autoSkip: false, // 라벨이 겹치지 않도록 자동으로 건너뛰기
+        autoSkipPadding: 100,
+        beginAtZero: true,
 
-        // barPercentage: 1.0,
-        // categoryPercentage: 1.0,
+        min: 0,
 
         // 눈금 선 설정
         grid: { drawTicks: false, color: "white" },
 
         border: {
           z: 0,
-          color: labelColor || "black",
+          color: labelColor || "lightgray",
           width: 1,
         },
 
+        // 라벨 설정
         ticks: {
-          color: labelColor || "black",
+          color: labelColor || "lightgray",
           minRotation: 0, // x축 값의 회전 각도를 설정
+          callback: (value, index, ticks) => {
+            if (index === ticks.length) {
+              return xLabelTitle;
+            }
+            return uniqueLabelArray[index];
+          },
           padding: 5, // x축 값의 상하 패딩을 설정
         },
       },
@@ -243,6 +204,7 @@ const BarChart = ({ labelColor, max }) => {
 
       // 범례 스타일링
       legend: {
+        display: false,
         position: "bottom",
         align: "center",
 
@@ -262,24 +224,16 @@ const BarChart = ({ labelColor, max }) => {
       },
       tooltip: {},
 
-      title: {
-        display: true,
-        text: "점수대별 서브 성공&범실",
-        // position: "start",
-        // align: "center",
-      },
-      barCustomYTitle: {
-        display: true,
-        text: "(회)",
-        color: labelColor || "black",
-      },
+      // title: {
+      //   display: false,
+      //   text: "점수대별 서브 성공&범실",
+      // },
     },
   };
 
   return (
-    <Container>
-      {/* <Doughnut data={DoughnutData} options={DoughnutOptions} /> */}
-      <Bar options={options} data={data} plugins={[BarCustomYTitle]} />
+    <Container width={width} height={height}>
+      <Bar options={defaultOptions} data={dataList} />
     </Container>
   );
 };

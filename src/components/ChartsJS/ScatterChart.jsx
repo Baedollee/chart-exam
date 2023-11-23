@@ -84,14 +84,15 @@ const ScatterChart = ({
 
         min: 0,
         max: 120,
-        afterDataLimits: (axis) => {
-          // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
-          // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
-          // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-          //   if (!yLabelTitle) {
-          //     axis.max = axis.max * 1.2;
-          //   }
-        },
+
+        // afterDataLimits: (axis) => {
+        // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
+        // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
+        // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
+        //   if (!yLabelTitle) {
+        //     axis.max = axis.max * 1.2;
+        //   }
+        // },
 
         border: {
           z: 0,
@@ -124,7 +125,7 @@ const ScatterChart = ({
         // 눈금선 설정
         grid: {
           display: true,
-          //   drawOnChartArea: true,
+          drawOnChartArea: true,
           drawTicks: false,
           color: (ctx) => {
             if (ctx.tick.value === yLabelValue) {
