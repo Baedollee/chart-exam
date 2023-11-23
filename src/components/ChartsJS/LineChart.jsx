@@ -62,13 +62,15 @@ const LineCustomYTitle = {
 };
 
 /**
- *
- * @returns
+ * 라인 차트
+ * @data 데이타 셋 / type : {}
+ * @options 옵션 셋 / type : {}
+ * @width 차트 컨테이너 너비 / default : '100%' / type : string
+ * @height 차트 컨테이너 높이 / default : '100%' / type : string
+ * @returns 라인 차트
  */
-const LineChart = () => {
-  // const xLabels = ["0~4", "5~8", "9~12", "13~16", "17~21", "22~25", "26~회"];
-
-  const data = {
+const LineChart = ({ data, options, width, height }) => {
+  const newData = {
     // labels: [xLabels],
     datasets: [
       {
@@ -95,7 +97,15 @@ const LineChart = () => {
       {
         type: "line",
         label: "김연경",
-        data: [20, 30, 10, 100, 50, 60, 40],
+        data: [
+          { x: "0~4", y: 10 },
+          { x: "5~8", y: 50 },
+          { x: "9~12", y: 30 },
+          { x: "13~16", y: 90 },
+          { x: "17~21", y: 100 },
+          { x: "22~25", y: 20 },
+          { x: "26~회", y: 100 },
+        ],
         backgroundColor: "blue",
         borderColor: "blue",
       },
@@ -117,7 +127,7 @@ const LineChart = () => {
     ],
   };
 
-  const options = {
+  const defaultOptions = {
     // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
     maintainAspectRatio: false,
     responsive: true,
@@ -220,6 +230,7 @@ const LineChart = () => {
 
       // 범례 스타일링
       legend: {
+        display: false,
         position: "bottom",
         align: "end",
 
@@ -242,7 +253,11 @@ const LineChart = () => {
 
   return (
     <Container>
-      <Line options={options} data={data} plugins={[LineCustomYTitle]} />
+      <Line
+        options={defaultOptions}
+        data={newData}
+        plugins={[LineCustomYTitle]}
+      />
     </Container>
   );
 };

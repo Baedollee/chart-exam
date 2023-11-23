@@ -77,7 +77,6 @@ const BarChart = ({ data, options, width, height }) => {
   ];
 
   const uniqueLabelArray = [...new Set(xLabel), "으아아"];
-  console.log("TCL: BarChart -> uniqueLabelArray", uniqueLabelArray);
 
   const defaultOptions = {
     maintainAspectRatio: false, // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
