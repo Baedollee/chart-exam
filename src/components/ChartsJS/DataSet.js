@@ -169,3 +169,23 @@ export const scatterOption = {
   labelColor: "blue",
   max: null,
 };
+
+/**
+ * @fontSize 글자크기 / default : '21px' / type : spring
+ */
+export const halfDoughnutDummyOption = {
+  fontSize: "20px",
+};
+
+/**
+ * @xValue 그래프 채워지는 값 / default : null / type : int
+ * @barColor 채워지는 색상 / 랜덤색상 / type : spring
+ * @barLineValue 차트에 그려지는 선 위치 값 / default : null / type : int
+ * @barLineColor 선 색상 / default : 'black' / type : int
+ */
+export const halfDoughnutDummyData = {
+  xValue: 60,
+  barColor: "red",
+  barLineValue: 40,
+  barLineColor: "blue",
+};

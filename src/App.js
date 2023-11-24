@@ -12,6 +12,8 @@ import {
   barOptions,
   doughnutDataList,
   doughnutOptions,
+  halfDoughnutDummyData,
+  halfDoughnutDummyOption,
   lineDataList,
   lineOptions,
   scatterDataList,
@@ -53,61 +55,55 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = () => {
-  /**
-   * @fontSize 글자크기 / default : '21px' / type : spring
-   */
-  const doughnutDummyOption = {
-    fontSize: "20px",
-  };
-
-  /**
-   * @xValue 그래프 채워지는 값 / default : null / type : int
-   * @barColor 채워지는 색상 / 랜덤색상 / type : spring
-   * @barLineValue 차트에 그려지는 선 위치 값 / default : null / type : int
-   * @barLineColor 선 색상 / default : 'black' / type : int
-   */
-  const doughnutDummyData = {
-    xValue: 60,
-    barColor: "red",
-    barLineValue: 40,
-    barLineColor: "blue",
-  };
+  // const barDataList = [
+  //   {
+  //     name: "선수1",
+  //     data: [
+  //       { xValue: "선수1 ~ 선수2", yValue: 30 },
+  //       { xValue: "선수2 ~ 선수3", yValue: 100 },
+  //       { xValue: "선수3 ~ 선수4", yValue: 50 },
+  //       { xValue: "선수4 ~ 선수5", yValue: 40 },
+  //       { xValue: "선수5 ~ 선수6", yValue: 60 },
+  //     ],
+  //     barColor: "skyblue",
+  //   },
+  // ];
 
   return (
     <Wrap>
       <GlobalStyles />
-      <HorizontalBarChart />
+      <HorizontalBarChart data={barDataList} width={"10rem"} height={"10rem"} />
 
       <BarChart
         data={barDataList}
         options={barOptions}
-        width={"20rem"}
-        height={"20rem"}
+        width={"10rem"}
+        height={"10rem"}
       />
 
       <DoughnutChart
         data={doughnutDataList}
         options={doughnutOptions}
-        width={"20rem"}
-        height={"20rem"}
+        width={"10rem"}
+        height={"10rem"}
       />
 
       <LineChart
         data={lineDataList}
         options={lineOptions}
-        width={"20rem"}
-        height={"20rem"}
+        width={"10rem"}
+        height={"10rem"}
       />
 
       <ScatterChart
         data={scatterDataList}
         options={scatterOption}
-        width={"20rem"}
-        height={"20rem"}
+        width={"10rem"}
+        height={"10rem"}
       />
       <HalfDoughnutChart
-        data={doughnutDummyData}
-        option={doughnutDummyOption}
+        data={halfDoughnutDummyData}
+        option={halfDoughnutDummyOption}
         width={"10rem"}
         height={"5rem"}
       />

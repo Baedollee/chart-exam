@@ -27,40 +27,38 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 300px;
+  width: ${({ width }) => {
+    return width || `100%`;
+  }};
+  height: ${({ height }) => {
+    return height || `100%`;
+  }};
 `;
 
-const HorizontalBarChart = () => {
-  const ChartData = useMemo(() => {
-    const labels = [
+const HorizontalBarChart = ({ width, height }) => {
+  const newData = {
+    labels: [
       "선수1 ~ 선수2",
       "선수2 ~ 선수3",
       "선수3 ~ 선수4",
       "선수4 ~ 선수5",
       "선수5 ~ 선수6",
-    ];
-    const data = {
-      labels,
-      datasets: [
-        {
-          data: [30, 100, 50, 40, 60],
-          backgroundColor: "blue",
-        },
-      ],
-    };
-
-    return { labels, data };
-  }, []);
-
-  const { data } = ChartData;
+    ],
+    datasets: [
+      {
+        data: [30, 100, 50, 40, 60],
+        backgroundColor: "blue",
+      },
+    ],
+  };
 
   const options = {
     // 그래프 축 변경
     indexAxis: "y",
 
-    // responsive: false,
-    maintainAspectRatio: false,
+    maintainAspectRatio: false, // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
+    responsive: true,
+
     maxBarThickness: 60, // 바 두께
     borderRadius: 5,
 
@@ -265,8 +263,8 @@ const HorizontalBarChart = () => {
   };
 
   return (
-    <Container>
-      <Bar options={options} data={data} />
+    <Container width={width} height={height}>
+      <Bar options={options} data={newData} />
     </Container>
   );
 };
