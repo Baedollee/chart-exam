@@ -12,6 +12,10 @@ import {
   barOptions,
   doughnutDataList,
   doughnutOptions,
+  lineDataList,
+  lineOptions,
+  scatterDataList,
+  scatterOption,
 } from "./components/ChartsJS/DataSet";
 
 const GlobalStyles = createGlobalStyle`
@@ -49,65 +53,25 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = () => {
+  /**
+   * @fontSize 글자크기 / default : '21px' / type : spring
+   */
   const doughnutDummyOption = {
-    width: 200,
-    // fontSize: 30,
-  };
-
-  const doughnutDummyData = {
-    xValue: 40,
-    barColor: "green",
+    fontSize: "20px",
   };
 
   /**
-   * @dataList type :[] / 단일 라인 차트로 이용시 [{}] dataList 배열에 하나의 객체만 [{}]
-   * @name 해당 라인의 이름 / default : null / type : string || int
-   * @data type :[]
-   * @xValue x축 라벨 / default : null / type : string
-   * @yValue 차트에 그려지는 값 / 필수값! / type : string || int
-   * @lineColor : 라인 색상 / default : 'blue' / type : string
+   * @xValue 그래프 채워지는 값 / default : null / type : int
+   * @barColor 채워지는 색상 / 랜덤색상 / type : spring
+   * @barLineValue 차트에 그려지는 선 위치 값 / default : null / type : int
+   * @barLineColor 선 색상 / default : 'black' / type : int
    */
-  const lineDataList = [
-    {
-      name: "리그평균",
-      data: [
-        { xValue: "0~4", yValue: 40 },
-        { xValue: "5~8", yValue: 100 },
-        { xValue: "9~12", yValue: 80 },
-        { xValue: "13~16", yValue: 50 },
-        { xValue: "17~21", yValue: 80 },
-        { xValue: "22~25", yValue: 30 },
-        { xValue: "26~회", yValue: 70 },
-      ],
-      lineColor: "red",
-    },
-    {
-      name: "김연경",
-      data: [
-        { xValue: "0~4", yValue: 10 },
-        { xValue: "5~8", yValue: 50 },
-        { xValue: "9~12", yValue: 30 },
-        { xValue: "13~16", yValue: 90 },
-        { xValue: "17~21", yValue: 100 },
-        { xValue: "22~25", yValue: 20 },
-        { xValue: "26~회", yValue: 100 },
-      ],
-      lineColor: "blue",
-    },
-    {
-      name: "으아아아",
-      data: [
-        { xValue: "0~4", yValue: 4 },
-        { xValue: "5~8", yValue: 10 },
-        { xValue: "9~12", yValue: 8 },
-        { xValue: "13~16", yValue: 5 },
-        { xValue: "17~21", yValue: 8 },
-        { xValue: "22~25", yValue: 3 },
-        { xValue: "26~회", yValue: 7 },
-      ],
-      lineColor: "green",
-    },
-  ];
+  const doughnutDummyData = {
+    xValue: 60,
+    barColor: "red",
+    barLineValue: 40,
+    barLineColor: "blue",
+  };
 
   return (
     <Wrap>
@@ -124,20 +88,28 @@ const App = () => {
       <DoughnutChart
         data={doughnutDataList}
         options={doughnutOptions}
-        width={"10rem"}
-        height={"10rem"}
+        width={"20rem"}
+        height={"20rem"}
       />
 
-      <LineChart />
+      <LineChart
+        data={lineDataList}
+        options={lineOptions}
+        width={"20rem"}
+        height={"20rem"}
+      />
+
       <ScatterChart
-        yLabelTitle={"으아아아"}
-        yLabelValue={20}
-        xLabelTitle={"나나나"}
-        xLabelValue={10}
+        data={scatterDataList}
+        options={scatterOption}
+        width={"20rem"}
+        height={"20rem"}
       />
       <HalfDoughnutChart
         data={doughnutDummyData}
         option={doughnutDummyOption}
+        width={"10rem"}
+        height={"5rem"}
       />
       <CommonRadioBox />
     </Wrap>

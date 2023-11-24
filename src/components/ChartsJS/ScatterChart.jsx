@@ -19,44 +19,129 @@ const Container = styled.div`
   position: relative;
   justify-content: center;
   align-items: center;
-  width: ${({ width }) => (width ? width : 400)}px;
-  height: ${({ height }) => (height ? height : 400)}px;
+  width: ${({ width }) => {
+    return width || `100%`;
+  }};
+  height: ${({ height }) => {
+    return height || `100%`;
+  }};
 `;
 
-const ScatterChart = ({
-  width,
-  height,
-  xLabelTitle,
-  yLabelTitle,
-  yLabelValue,
-  xLabelValue,
-}) => {
-  const data = {
-    datasets: [
-      {
-        label: "김선수(대한항공)",
-        data: [
-          { x: 1.2, y: 40 },
-          { x: 25, y: 100 },
-          { x: 20, y: 80 },
-          { x: 8, y: 50 },
-          { x: 7, y: 80 },
-          { x: 6, y: 30 },
-          { x: 4, y: 70 },
-          { x: 2, y: 40 },
-          { x: 24, y: 100 },
-          { x: 40, y: 80 },
-          { x: 2, y: 50 },
-          { x: 3, y: 80 },
-          { x: 5, y: 30 },
-          { x: 1, y: 70 },
-        ],
-        backgroundColor: "blue",
-      },
-    ],
+// 랜덤 색상
+const randomRgb = () => {
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
+
+  return [r, g, b];
+};
+
+const randomRgbHex = () => {
+  let [r, g, b] = randomRgb();
+
+  r = r.toString(16).length === 1 ? "0" + r.toString(16) : r.toString(16);
+  g = g.toString(16).length === 1 ? "0" + g.toString(16) : g.toString(16);
+  b = b.toString(16).length === 1 ? "0" + b.toString(16) : b.toString(16);
+
+  return r + g + b;
+};
+
+/**
+ * 분포 차트
+ * @data 데이타 셋 / type : []
+ * @options 옵션 셋 / type : {}
+ * @width 차트 컨테이너 너비 / default : '100%' / type : string
+ * @height 차트 컨테이너 높이 / default : '100%' / type : string
+ * @returns 분포 차트
+ */
+const ScatterChart = ({ data, options, width, height }) => {
+  const { xLabelTitle, yLabelTitle, labelColor, max } = options;
+
+  const receiveData = Array.isArray(data) ? data : [];
+
+  const dataList = {
+    datasets: receiveData?.map((i) => {
+      const { name, data, pointerColor, xLineValue, yLineValue } = i;
+
+      return {
+        label: name,
+        pointBackgroundColor: pointerColor || "#" + randomRgbHex(),
+        data: data?.map((i) => {
+          if (i) {
+            const { xValue, yValue } = i;
+            return {
+              x: xValue,
+              y: yValue,
+            };
+          }
+          return { x: "", y: "" };
+        }),
+        xLineValue,
+        yLineValue,
+      };
+    }),
   };
 
-  const options = {
+  const dataMaxNum = Math.max(
+    ...dataList?.datasets
+      ?.map((i) => {
+        if (i.data) {
+          return i?.data;
+        }
+        return null;
+      })
+      ?.flat()
+      ?.map((i) => {
+        if (i?.y) {
+          return i.y;
+        }
+        return null;
+      })
+  );
+
+  const maxCheck = max ? max * 1.2 : dataMaxNum * 1.2;
+
+  const xLineValue = dataList["datasets"][0]?.xLineValue || 10;
+  const yLineValue = dataList["datasets"][0]?.yLineValue || null;
+
+  const linePlugin = {
+    beforeDraw: (chart) => {
+      // x축 선 그리기
+      if (xLineValue !== null) {
+        const ctx = chart.ctx;
+        const xAxis = chart.scales["x"];
+        const yPos = chart.scales["y"].bottom;
+        const xPos = xAxis.getPixelForValue(xLineValue);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(xPos, chart.scales["y"].bottom - chart.scales["y"].height);
+        ctx.lineTo(xPos, yPos);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "orange";
+        ctx.stroke();
+        ctx.restore();
+      }
+      // y축 선 그리기
+      if (yLineValue !== null) {
+        const ctx = chart.ctx;
+        const yAxis = chart.scales["y"];
+        const xPos = chart.scales["x"].right;
+        const yPos = yAxis.getPixelForValue(yLineValue);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(chart.scales["x"].right - chart.scales["x"].width, yPos);
+        ctx.lineTo(xPos, yPos);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "blue";
+        ctx.stroke();
+        ctx.restore();
+      }
+    },
+  };
+
+  const defaultOptions = {
     // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
     maintainAspectRatio: false,
     responsive: true,
@@ -83,7 +168,7 @@ const ScatterChart = ({
         beginAtZero: true,
 
         min: 0,
-        max: 120,
+        max: max ? maxCheck : Math.round(maxCheck / 10) * 10,
 
         // afterDataLimits: (axis) => {
         // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
@@ -99,7 +184,7 @@ const ScatterChart = ({
           color: "lightGray",
           width: 1,
           dash: (ctx) => {
-            if (ctx.tick.value === yLabelValue) {
+            if (ctx.tick.value === yLabelTitle) {
               return [0];
             } else {
               return [8];
@@ -107,9 +192,21 @@ const ScatterChart = ({
           }, // 그리드 선의 길이와 간격 type number[]
         },
 
-        // 라벨 설정
+        // 눈금선 설정
+        grid: {
+          drawTicks: false,
+          color: (ctx) => {
+            if (ctx.tick.label !== yLabelTitle) {
+              return labelColor || "lightgray";
+            }
+          },
+        },
+
+        // y축 틱 설정
         ticks: {
-          stepSize: 20,
+          beginAtZero: true,
+          minTicksLimit: 5,
+          stepSize: Math.round(maxCheck / 6 / 10) * 10,
           callback: (value, index, ticks) => {
             if (value !== 0) {
               if (index === ticks.length - 1) {
@@ -118,23 +215,8 @@ const ScatterChart = ({
               return value;
             }
           },
-          backdropColor: "blue",
+          color: labelColor || "lightgray",
           padding: 8,
-        },
-
-        // 눈금선 설정
-        grid: {
-          display: true,
-          drawOnChartArea: true,
-          drawTicks: false,
-          color: (ctx) => {
-            if (ctx.tick.value === yLabelValue) {
-              return "blue";
-            }
-            if (ctx.tick.label !== yLabelTitle) {
-              return "lightGray";
-            }
-          },
         },
       },
 
@@ -159,29 +241,30 @@ const ScatterChart = ({
           color: "lightGray",
           width: 1,
         },
+
         // 라벨 설정
         ticks: {
-          callback: (value, index, ticks) => {
-            if (value !== 0) {
-              if (index === ticks.length - 1) {
-                return xLabelTitle;
-              }
-              return value;
-            }
-          },
-          padding: 8,
+          color: labelColor || "lightgray",
+          minRotation: 0, // x축 값의 회전 각도를 설정
+          // callback: (value, index, ticks) => {
+          //   if (index === ticks.length) {
+          //     return xLabelTitle;
+          //   }
+          //   return;
+          // },
+          padding: 5, // x축 값의 상하 패딩을 설정
         },
 
         // 눈금 선 설정
         grid: {
-          display: true,
+          display: false,
           // 눈금 선 0 이상부터
           drawTicks: false,
-          color: (ctx) => {
-            if (ctx.tick.value === xLabelValue) {
-              return "orange";
-            }
-          },
+          // color: (ctx) => {
+          //   if (ctx.tick.value === xLabelValue) {
+          //     return "orange";
+          //   }
+          // },
         },
       },
     },
@@ -223,7 +306,11 @@ const ScatterChart = ({
 
   return (
     <Container width={width} height={height}>
-      <Scatter data={data} options={options} />
+      <Scatter
+        data={dataList}
+        options={defaultOptions}
+        plugins={[linePlugin]}
+      />
     </Container>
   );
 };

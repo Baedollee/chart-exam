@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Chart, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -26,106 +26,129 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 500px;
+  width: ${({ width }) => {
+    return width || `100%`;
+  }};
+  height: ${({ height }) => {
+    return height || `100%`;
+  }};
 `;
 
-const LineCustomYTitle = {
-  id: "lineCustomYTitle",
-  beforeLayout: (chart, args, opts) => {
-    const { display, font } = opts;
-    if (!display) {
-      return;
-    }
+// const LineCustomYTitle = {
+//   id: "lineCustomYTitle",
+//   beforeLayout: (chart, args, opts) => {
+//     const { display, font } = opts;
+//     if (!display) {
+//       return;
+//     }
 
-    const { ctx } = chart;
-    ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
-    const { width } = ctx.measureText(opts.text);
+//     const { ctx } = chart;
+//     ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
+//     const { width } = ctx.measureText(opts.text);
 
-    chart.options.layout.padding.left = width * 1;
-  },
-  afterDraw: (chart, args, opts) => {
-    const { font, text, color } = opts;
-    const {
-      ctx,
-      chartArea: { left, right, top, bottom, height, width },
-      canvas: { offsetLeft, offsetTop, offsetBottom },
-    } = chart;
-    if (opts.display) {
-      //   console.log("LineCustomYTitle", chart);
+//     chart.options.layout.padding.left = width * 1;
+//   },
+//   afterDraw: (chart, args, opts) => {
+//     const { font, text, color } = opts;
+//     const {
+//       ctx,
+//       chartArea: { left, right, top, bottom, height, width },
+//       canvas: { offsetLeft, offsetTop, offsetBottom },
+//     } = chart;
+//     if (opts.display) {
+//       //   console.log("LineCustomYTitle", chart);
 
-      ctx.fillStyle = color || Chart.defaults.color;
-      ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
-      ctx.fillText(text, (right - width) * 0.5, bottom - height);
-    }
-  },
+//       ctx.fillStyle = color || Chart.defaults.color;
+//       ctx.font = font || '12px "Helvetica Neue", Helvetica, Arial, sans-serif';
+//       ctx.fillText(text, (right - width) * 0.5, bottom - height);
+//     }
+//   },
+// };
+
+// 랜덤 색상
+const randomRgb = () => {
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
+
+  return [r, g, b];
+};
+
+const randomRgbHex = () => {
+  let [r, g, b] = randomRgb();
+
+  r = r.toString(16).length === 1 ? "0" + r.toString(16) : r.toString(16);
+  g = g.toString(16).length === 1 ? "0" + g.toString(16) : g.toString(16);
+  b = b.toString(16).length === 1 ? "0" + b.toString(16) : b.toString(16);
+
+  return r + g + b;
 };
 
 /**
  * 라인 차트
- * @data 데이타 셋 / type : {}
+ * @data 데이타 셋 / type : []
  * @options 옵션 셋 / type : {}
  * @width 차트 컨테이너 너비 / default : '100%' / type : string
  * @height 차트 컨테이너 높이 / default : '100%' / type : string
  * @returns 라인 차트
  */
 const LineChart = ({ data, options, width, height }) => {
-  const newData = {
-    // labels: [xLabels],
+  const { xLabelTitle, yLabelTitle, labelColor, max } = options;
+
+  const receiveData = Array.isArray(data) ? data : [];
+
+  const dataList = {
     datasets: [
       {
         type: "bar",
-        label: "",
+        label: null,
         backgroundColor: "white",
         borderColor: "white",
       },
-      {
-        type: "line",
-        label: "리그평균",
-        data: [
-          { x: "0~4", y: 40 },
-          { x: "5~8", y: 100 },
-          { x: "9~12", y: 80 },
-          { x: "13~16", y: 50 },
-          { x: "17~21", y: 80 },
-          { x: "22~25", y: 30 },
-          { x: "26~회", y: 70 },
-        ],
-        backgroundColor: "red",
-        borderColor: "red",
-      },
-      {
-        type: "line",
-        label: "김연경",
-        data: [
-          { x: "0~4", y: 10 },
-          { x: "5~8", y: 50 },
-          { x: "9~12", y: 30 },
-          { x: "13~16", y: 90 },
-          { x: "17~21", y: 100 },
-          { x: "22~25", y: 20 },
-          { x: "26~회", y: 100 },
-        ],
-        backgroundColor: "blue",
-        borderColor: "blue",
-      },
-      {
-        type: "line",
-        label: "으아아아",
-        data: [
-          { x: "0~4", y: 4 },
-          { x: "5~8", y: 10 },
-          { x: "9~12", y: 8 },
-          { x: "13~16", y: 5 },
-          { x: "17~21", y: 8 },
-          { x: "22~25", y: 3 },
-          { x: "26~회", y: 7 },
-        ],
-        backgroundColor: "green",
-        borderColor: "green",
-      },
+      ...receiveData?.map((i) => {
+        if (i) {
+          const { name, data, lineColor, pointerColor } = i;
+
+          return {
+            type: "line",
+            label: name,
+            borderColor: lineColor || "#" + randomRgbHex(),
+            pointBackgroundColor: pointerColor || "#" + randomRgbHex(),
+            data: data?.map((i) => {
+              if (i) {
+                const { xValue, yValue } = i;
+                return {
+                  x: xValue,
+                  y: yValue,
+                };
+              }
+              return { x: "", y: "" };
+            }),
+          };
+        }
+        return null;
+      }),
     ],
   };
+
+  const dataMaxNum = Math.max(
+    ...dataList?.datasets
+      ?.map((i) => {
+        if (i.data) {
+          return i?.data;
+        }
+        return null;
+      })
+      ?.flat()
+      ?.map((i) => {
+        if (i?.y) {
+          return i.y;
+        }
+        return null;
+      })
+  );
+
+  const maxCheck = max ? max * 1.2 : dataMaxNum * 1.2;
 
   const defaultOptions = {
     // 사용자가 높이 너비 조정할 수 있게, false로 해놔야함
@@ -133,9 +156,8 @@ const LineChart = ({ data, options, width, height }) => {
     responsive: true,
 
     // 점의 굵기
-    radius: 6,
+    radius: 5,
     // 점의 색상
-    // pointBackgroundColor: "#fff",
     interaction: {
       // intersect: false,
     },
@@ -150,42 +172,43 @@ const LineChart = ({ data, options, width, height }) => {
     scales: {
       y: {
         axis: "y", // 이 축이 y축임을 명시해줍니다.
-
         min: 0,
-        max: 100,
-
-        afterDataLimits: (scale) => {
-          // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
-          // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
-          // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-          scale.max = scale.max * 1.2;
-        },
-        // 눈금선 설정
-        grid: {
-          //   display: false,
-          //   drawOnChartArea: true,
-          drawTicks: false,
-          color: "lightgray",
-        },
+        max: max ? maxCheck : Math.round(maxCheck / 10) * 10,
         border: {
           z: 0,
-          color: "lightGray",
+          color: labelColor || "lightGray",
           width: 1,
           dash: [8], // 그리드 선의 길이와 간격 type number[]
         },
 
+        // 눈금선 설정
+        grid: {
+          drawTicks: false,
+          color: (ctx) => {
+            if (ctx.tick.label !== yLabelTitle) {
+              return labelColor || "lightgray";
+            }
+          },
+        },
+
+        // y축 틱 설정
         ticks: {
           beginAtZero: true,
-          stepSize: 20,
+          minTicksLimit: 5,
+          stepSize: Math.round(maxCheck / 6 / 10) * 10,
           callback: (value, index, ticks) => {
             if (value !== 0) {
+              if (index === ticks.length - 1) {
+                return yLabelTitle;
+              }
               return value;
             }
           },
-          //   backdropColor: "blue",
+          color: labelColor || "lightgray",
           padding: 8,
         },
       },
+
       x: {
         axis: "x", // x축(가로축)인지 y축(세로축)인지 표시합니다.
         // barPercentage: 1.0,
@@ -197,15 +220,21 @@ const LineChart = ({ data, options, width, height }) => {
 
         border: {
           z: 0,
-          color: "lightGray",
+          color: labelColor || "lightgray",
           width: 1,
         },
+
+        // 라벨 설정
         ticks: {
-          backdropPadding: {
-            x: 40,
-            y: 4,
-          },
-          padding: 8,
+          color: labelColor || "lightgray",
+          minRotation: 0, // x축 값의 회전 각도를 설정
+          // callback: (value, index, ticks) => {
+          //   if (index === ticks.length) {
+          //     return xLabelTitle;
+          //   }
+          //   return;
+          // },
+          padding: 5, // x축 값의 상하 패딩을 설정
         },
       },
     },
@@ -218,15 +247,15 @@ const LineChart = ({ data, options, width, height }) => {
       },
       // 차트 제목 설정
       title: {
-        display: true,
+        display: false,
         text: "선 차트",
       },
 
-      lineCustomYTitle: {
-        display: true,
-        text: "(%)",
-        color: "black",
-      },
+      // lineCustomYTitle: {
+      //   display: true,
+      //   text: "(%)",
+      //   color: "black",
+      // },
 
       // 범례 스타일링
       legend: {
@@ -252,11 +281,11 @@ const LineChart = ({ data, options, width, height }) => {
   };
 
   return (
-    <Container>
+    <Container width={width} height={height}>
       <Line
         options={defaultOptions}
-        data={newData}
-        plugins={[LineCustomYTitle]}
+        data={dataList}
+        // plugins={[LineCustomYTitle]}
       />
     </Container>
   );

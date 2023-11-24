@@ -67,3 +67,105 @@ export const doughnutOptions = {
   borderWidth: 0,
   cutout: "40%",
 };
+
+/**
+ * @dataList type :[] / 단일 라인 차트로 이용시 [{}] dataList 배열에 하나의 객체만 [{}]
+ * @name 해당 라인의 이름 / default : null / type : string || int
+ * @data type :[]
+ * @xValue x축 라벨 / default : null / type : string
+ * @yValue 차트에 그려지는 값 / 필수값! / type : string || int
+ * @lineColor  라인 색상 / default : 랜덤색상 / type : string
+ * @pointerColor 점 색상 / default : 랜덤색상 / type : string
+ */
+export const lineDataList = [
+  {
+    name: "리그평균",
+    data: [
+      { xValue: "0~4", yValue: 40 },
+      { xValue: "5~8", yValue: 100 },
+      { xValue: "9~12", yValue: 80 },
+      { xValue: "13~16", yValue: 50 },
+      { xValue: "17~21", yValue: 80 },
+      { xValue: "22~25", yValue: 30 },
+      { xValue: "26~회", yValue: 70 },
+    ],
+    lineColor: "red",
+    pointerColor: "red",
+  },
+  {
+    name: "김연경",
+    data: [
+      { xValue: "0~4", yValue: 10 },
+      { xValue: "5~8", yValue: 50 },
+      { xValue: "9~12", yValue: 30 },
+      { xValue: "13~16", yValue: 90 },
+      { xValue: "17~21", yValue: 100 },
+      { xValue: "22~25", yValue: 20 },
+      { xValue: "26~회", yValue: 100 },
+    ],
+    lineColor: "blue",
+    pointerColor: "blue",
+  },
+];
+
+/**
+ * @yLabelTitle : y축 단위 이름 / default : null / type : string
+ * @xLabelTitle : x축 단위 이름 / default : null / type : string
+ * @labelColor : 라벨폰트 색상 / default : lightGray / type : string
+ * @max : y축 그래프 최대 값 설정 / default : max yValue in Array / type : int
+ */
+
+export const lineOptions = {
+  xLabelTitle: "",
+  yLabelTitle: "(회)",
+  labelColor: "lightGray",
+  max: 100,
+};
+
+/**
+ * @dataList type :[] / 단일 라인 차트로 이용시 [{}] dataList 배열에 하나의 객체만 [{}]
+ * @name 해당 라인의 이름 / default : null / type : string || int
+ * @data type :[]
+ * @xValue x축 좌표값 / 필수값! / type : string || int
+ * @yValue y축 좌표값 / 필수값! / type : string || int
+ * @pointerColor 점 색상 / default : 랜덤색상 / type : string
+ * @xLineValue  x축에 선 위치값 (점유율?)/ default : 10 / type : int
+ * @yLineValue  y축에 선 위치값 (평균 효율?) / default : null / type : int
+ */
+export const scatterDataList = [
+  {
+    name: "김선수(대한항공)",
+    data: [
+      { xValue: 1.2, yValue: 40 },
+      { xValue: 25, yValue: 100 },
+      { xValue: 20, yValue: 80 },
+      { xValue: 8, yValue: 50 },
+      { xValue: 7, yValue: 80 },
+      { xValue: 6, yValue: 30 },
+      { xValue: 4, yValue: 70 },
+      { xValue: 2, yValue: 40 },
+      { xValue: 24, yValue: 120 },
+      { xValue: 40, yValue: 80 },
+      { xValue: 2, yValue: 50 },
+      { xValue: 3, yValue: 80 },
+      { xValue: 5, yValue: 30 },
+      { xValue: 1, yValue: 70 },
+    ],
+    pointerColor: "red",
+    xLineValue: 10,
+    yLineValue: 40,
+  },
+];
+
+/**
+ * @yLabelTitle : y축 단위 이름 / default : null / type : string
+ * @xLabelTitle : x축 단위 이름 / default : null / type : string
+ * @labelColor : 라벨폰트 색상 / default : lightGray / type : string
+ * @max : y축 그래프 최대 값 설정 / default : max yValue in Array / type : int
+ */
+export const scatterOption = {
+  xLabelTitle: "",
+  yLabelTitle: "(회)",
+  labelColor: "blue",
+  max: null,
+};
