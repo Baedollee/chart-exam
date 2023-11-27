@@ -35,24 +35,33 @@ const Container = styled.div`
   }};
 `;
 
-const HorizontalBarChart = ({ width, height }) => {
+const HorizontalBarChart = ({ data, options, width, height }) => {
+  const { borderColor, xValueColor, xValueSize, yValueColor, yValueSize } =
+    options;
+
+  const labels = Array.isArray(data?.data)
+    ? data?.data?.map((j) => j.xValue)
+    : [];
+  const dataValue = Array.isArray(data?.data)
+    ? data?.data?.map((j) => j.yValue)
+    : [];
   const newData = {
-    labels: [
-      "선수1 ~ 선수2",
-      "선수2 ~ 선수3",
-      "선수3 ~ 선수4",
-      "선수4 ~ 선수5",
-      "선수5 ~ 선수6",
-    ],
-    datasets: [
-      {
-        data: [30, 100, 50, 40, 60],
-        backgroundColor: "blue",
-      },
-    ],
+    labels: labels,
+    datasets: [{ data: dataValue, backgroundColor: data.barColor }],
   };
 
-  const options = {
+  // const newData = receiveData
+  //   ? receiveData?.map((i) => {
+  //       const labels = i.data?.map((j) => j.xValue);
+  //       const data = i.data?.map((j) => j.yValue);
+  //       return {
+  //         labels: labels,
+  //         datasets: [{ data: data, backgroundColor: i.barColor }],
+  //       };
+  //     })
+  //   : {};
+
+  const defaultOptions = {
     // 그래프 축 변경
     indexAxis: "y",
 
@@ -106,7 +115,7 @@ const HorizontalBarChart = ({ width, height }) => {
           // y축의 최대값은 데이터의 최대값에 딱 맞춰져서 그려지므로
           // y축 위쪽 여유공간이 없어 좀 답답한 느낌이 들 수 있는데요,
           // 이와 같이 afterDataLimits 콜백을 사용하여 y축의 최대값을 좀 더 여유있게 지정할 수 있습니다!
-          // scale.max = scale.max * 0.9;
+          // scale.max = scale.max * 1.2;
         },
 
         // beginAtZero: true,
@@ -157,7 +166,7 @@ const HorizontalBarChart = ({ width, height }) => {
 
         border: {
           z: 0,
-          color: "red",
+          color: borderColor || "black",
           width: 1,
           dash: [8], // 그리드 선의 길이와 간격 type number[]
         },
@@ -194,7 +203,7 @@ const HorizontalBarChart = ({ width, height }) => {
 
         border: {
           z: 0,
-          color: "lightGray",
+          color: borderColor || "black",
           width: 1,
         },
 
@@ -208,23 +217,27 @@ const HorizontalBarChart = ({ width, height }) => {
     plugins: {
       datalabels: {
         labels: {
+          // yValue 폰트 설정
           title: {
             font: {
+              size: yValueSize || "16px",
               weight: "900",
             },
             anchor: "end",
             align: "end",
-            color: "black",
+            color: yValueColor || "black",
             formatter: (value) => {
               return value;
             },
           },
+          // xValue 폰트 설정
           value: {
             anchor: "start",
             clamp: true,
             align: "center",
-            color: "white",
+            color: xValueColor || "white",
             font: {
+              size: xValueSize || "16px",
               weight: "900",
             },
             // offset: (ctx) => {
@@ -264,7 +277,7 @@ const HorizontalBarChart = ({ width, height }) => {
 
   return (
     <Container width={width} height={height}>
-      <Bar options={options} data={newData} />
+      <Bar options={defaultOptions} data={newData} />
     </Container>
   );
 };

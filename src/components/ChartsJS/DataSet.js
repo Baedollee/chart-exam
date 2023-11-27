@@ -189,3 +189,45 @@ export const halfDoughnutDummyData = {
   barLineValue: 40,
   barLineColor: "blue",
 };
+
+/**
+ * 수평 바 차트
+ * @data 데이타 셋 / type : {}
+ * @options 옵션 셋 / type : {}
+ * @width 차트 컨테이너 너비 / default : '100%' / type : string
+ * @height 차트 컨테이너 높이 / default : '100%' / type : string
+ * @return 수평 바 차트
+ */
+
+/**
+ * @dataList type :{}
+ * @data type :[]
+ * @xValue 바 안에 그려지는 값 / 필수값 / type : string
+ * @yValue 바 밖에 그려지는 값 / 필수값! / type : string || int
+ * @barColor : 바 색상 / default : 'blue' / type : string
+ */
+export const horizontalBarDataList = {
+  data: [
+    { xValue: "선수1 ~ 선수2", yValue: 30 },
+    { xValue: "선수2 ~ 선수3", yValue: 100 },
+    { xValue: "선수3 ~ 선수4", yValue: 50 },
+    { xValue: "선수4 ~ 선수5", yValue: 40 },
+    { xValue: "선수5 ~ 선수6", yValue: 60 },
+  ],
+  barColor: "skyblue",
+};
+
+/**
+ * @borderColor : 차트 테두리 색상 / default : 'black' / type : string
+ * @xValueColor : 라벨 색상 / default : 'black' / type : string
+ * @xValueSize : 라벨 크기 / default : '16px' / type : string
+ * @yValueColor : 수치 색상 / default : 'black' / type : string
+ * @yValueSize : 수치 크기 / default : '16px' / type : string
+ */
+export const horizontalBarOptions = {
+  borderColor: "blue",
+  xValueColor: "white",
+  xValueSize: "12px",
+  yValueColor: "black",
+  yValueSize: "14px",
+};
