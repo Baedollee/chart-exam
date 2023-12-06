@@ -42,7 +42,7 @@ const Wrap = styled.div`
   flex-direction: column;
   align-items: center;
   border-radius: 16px;
-  padding: 16px 0px;
+  /* padding: 16px 0px; */
   /* background: var(--gray-scale-white, #fff); */
   box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.1),
     0px 1px 2px 0px rgba(0, 0, 0, 0.15);
@@ -50,6 +50,7 @@ const Wrap = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 16px 0px;
   gap: 12px;
   width: 100%;
   height: 100%;
